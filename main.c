@@ -2,23 +2,24 @@
 #include <stdlib.h>
 #include <locale.h>
 #include <string.h>
+#include <Windows.h>
 
 char paises[20][100] = {
 	"Reino Unido",	
 	"Alemanha",
 	"Brasil",	
 	"Argentina",	
-	"FranÁa",
-	"¡ustria",
-	"Austr·lia",
-	"Finl‚ndia",
-	"It·lia",
+	"Fran√ßa",
+	"√Åustria",
+	"Austr√°lia",
+	"Finl√¢ndia",
+	"It√°lia",
 	"Espanha",	
 	"Estados Unidos",
-	"Canad·",
-	"¡frica do Sul",
-	"Nova Zel‚ndia",
-	"PaÌses Baixos"
+	"Canad√°",
+	"√Åfrica do Sul",
+	"Nova Zel√¢ndia",
+	"Pa√≠ses Baixos"
 };
 
 struct Piloto{
@@ -37,25 +38,27 @@ struct Tempo{
 
 
 struct Circuito{
-	// ˙nico gerado automaticamente com base no ˙ltimo circuito registrado
+	// √∫nico gerado automaticamente com base no √∫ltimo circuito registrado
 	int codigo;
 	char nome[100];
 	char pais[100];
 	int tamanhoCircuito;
 	
-//	O valor do menor tempo do circuito dever· ser atualizado automaticamente sempre 
+//	O valor do menor tempo do circuito dever√° ser atualizado automaticamente sempre 
 // que um piloto realizar uma volta melhor do que a anteriormente cadastrada.
 	struct Tempo tempoRecorde;
 	
-// IdentificaÁ„o do piloto que obteve o menor tempo do circuito;
+// Identifica√ß√£o do piloto que obteve o menor tempo do circuito;
 	int identificacaoPiloto;
 };
 
 char pedeSexo();
-void pedeNome(char nomePiloto[100]);
+void pedeNome(char nomePiloto[100], char pedido[50]);
 void pedePaisOrigemPiloto(char paisOrigem[100]);
 int incluiNovoCircuito(struct Circuito circuitosRegistrados[500], int circuitosJaRegistrados);
 int incluiNovoPiloto(struct Piloto pilotosRegistrados[399], int pilotosJaRegistrados);
+int pedeIdPiloto();
+int pedeIdade();
 
 int main() {
 	setlocale(LC_ALL, "Portuguese");
@@ -66,13 +69,13 @@ int main() {
 	int pilotosJaRegistrados = 0;
 	
 	
-	//	Para o cadastro de um Piloto ou Circuito sÛ poder„o ser utilizados os paÌses
-	//	previamente cadastrados (seja um vetor prÈ-definido ou com o uso de leitura em
+	//	Para o cadastro de um Piloto ou Circuito s√≥ poder√£o ser utilizados os pa√≠ses
+	//	previamente cadastrados (seja um vetor pr√©-definido ou com o uso de leitura em
 	//	arquivos).
 	
 
 	
-	// inclus„o de um novo piloto
+	// inclus√£o de um novo piloto
 	pilotosJaRegistrados = incluiNovoPiloto(pilotosRegistrados, pilotosJaRegistrados);
 	circuitosJaRegistrados = incluiNovoCircuito(circuitosRegistrados, circuitosJaRegistrados);
 }
@@ -81,7 +84,7 @@ int incluiNovoCircuito(struct Circuito circuitosRegistrados[500], int circuitosJ
 	struct Circuito circuito;
 	
 	circuito.codigo = circuitosJaRegistrados;
-	
+	pedeNome(circuito.nome, "circuito");
 	circuitosRegistrados[circuitosJaRegistrados] = circuito;
 	
 	return circuitosJaRegistrados + 1;
@@ -91,22 +94,22 @@ int incluiNovoPiloto(struct Piloto pilotosRegistrados[399], int pilotosJaRegistr
 	struct Piloto piloto;
 	
 	piloto.codigo = pedeIdPiloto();
-	pedeNome(piloto.nome);
+	pedeNome(piloto.nome, "piloto");
 	piloto.idade = pedeIdade();
 	pedePaisOrigemPiloto(piloto.paisOrigem);
 	piloto.sexo = pedeSexo();
 	
 	pilotosRegistrados[pilotosJaRegistrados] = piloto;
 	printf("\nPiloto Registrado com sucesso!");
-	sleep(3000);
+	Sleep(3000);
 
 	system("CLS");
 	return pilotosJaRegistrados + 1;
 }
 
 
-void pedeNome(char nomePiloto[100]){
-	printf("Digite o nome do piloto: ");
+void pedeNome(char nomePiloto[100], char pedido[50]){
+	printf("Digite o nome do %s: ", pedido);
 	scanf("%[^\n]s", &nomePiloto);
 	fflush(stdin);
 }
@@ -120,18 +123,18 @@ int pedeIdade(){
 	
 	if(idade > 0 && idade < 200) return idade;
 	system("CLS");
-	printf("Idade inv·lida! Tente novamente...\n");
+	printf("Idade inv√°lida! Tente novamente...\n");
 	return pedeIdade();
 }
 
 void pedePaisOrigemPiloto(char paisOrigem[100]){
 	int i;
 	
-	printf("Digite o paÌs de origem do piloto: ");
+	printf("Digite o pa√≠s de origem do piloto: ");
 	scanf("%[^\n]s", &paisOrigem);
 	fflush(stdin);
-	// essa vari·vel indica se o programa encontrou o nome do paÌs que o usu·rio digitou no vetor de paÌses
-	// 0 significa que n„o encontrou, 1 significa que encontrou o nome
+	// essa vari√°vel indica se o programa encontrou o nome do pa√≠s que o usu√°rio digitou no vetor de pa√≠ses
+	// 0 significa que n√£o encontrou, 1 significa que encontrou o nome
 	int achou = 0;
 
 	for(i = 0; i < 20; i++){
@@ -141,7 +144,7 @@ void pedePaisOrigemPiloto(char paisOrigem[100]){
 	
 	if(achou == 0){
 		system("CLS");
-		printf("N„o conseguimos entender... tente novamente\n");
+		printf("N√£o conseguimos entender... tente novamente\n");
 		pedePaisOrigemPiloto(paisOrigem);	
 	}
 
@@ -150,19 +153,19 @@ void pedePaisOrigemPiloto(char paisOrigem[100]){
 
 int pedeIdPiloto(){
 	
-	// falta verificar se o id que o usu·rio passou j· foi incluÌdo em algum momento, assim evitar a repetiÁ„o do mesmo piloto
+	// falta verificar se o id que o usu√°rio passou j√° foi inclu√≠do em algum momento, assim evitar a repeti√ß√£o do mesmo piloto
 	int idPiloto;
 	
-	// pedindo a identificaÁ„o do piloto
+	// pedindo a identifica√ß√£o do piloto
 	printf("Numero de identificacao do jogo:");
 	scanf("%i",&idPiloto);
 	fflush(stdin);
 	
-	// verifica se o id do piloto est· no intervalo de 100 e 500 (n„o incluso) 
+	// verifica se o id do piloto est√° no intervalo de 100 e 500 (n√£o incluso) 
 	if(idPiloto > 100 && idPiloto < 500){
 		return idPiloto;
 	} else { 
-	// se o id do piloto n„o passou pelas verificaÁıes acima, ent„o o programa limpa a tela, exibe uma mensagem de erro e comeÁa o processo novamente atÈ achar um id v·lido
+	// se o id do piloto n√£o passou pelas verifica√ß√µes acima, ent√£o o programa limpa a tela, exibe uma mensagem de erro e come√ßa o processo novamente at√© achar um id v√°lido
 		system("CLS");
 		printf("Valor digitado incorreto, tente novamente...\n\n");
 		return pedeIdPiloto();
@@ -172,17 +175,15 @@ int pedeIdPiloto(){
 char pedeSexo(){
 	char sexo;
 	
-	// pedindo para o usu·rio um char que represente o sexo do piloto
+	// pedindo para o usu√°rio um char que represente o sexo do piloto
 	printf("Digite o sexo do piloto (m -> masculino, f -> feminino): ");
 	scanf("%c", &sexo);
 	fflush(stdin);
 	
-	// se for f ou m, ent„o est· v·lido, portanto j· retorna o valor
+	// se for f ou m, ent√£o est√° v√°lido, portanto j√° retorna o valor
 	if(sexo == 'f' || sexo == 'm') return sexo;
 	
-	// caso o contr·rio exibe a mensagem de valor inv·lido e repete a funÁ„o
-	printf("Valor inv·lido! Tente novamente...\n");
+	// caso o contr√°rio exibe a mensagem de valor inv√°lido e repete a fun√ß√£o
+	printf("Valor inv√°lido! Tente novamente...\n");
 	return pedeSexo();	
 }
-
-
