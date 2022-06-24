@@ -36,29 +36,36 @@ struct Tempo{
 	int milisegundos;
 };
 
+struct Data{
+	int ano;
+	int mes;
+	int dia;
+};
+
+struct MelhorVolta{
+	int identificacaoPiloto;
+	int identificacaoCircuito;
+	struct Tempo tempoRecorde;
+	struct Data data;
+};
 
 struct Circuito{
 	// único gerado automaticamente com base no último circuito registrado
 	int codigo;
 	char nome[100];
 	char pais[100];
-	int tamanhoCircuito;
-	
-//	O valor do menor tempo do circuito deverá ser atualizado automaticamente sempre 
-// que um piloto realizar uma volta melhor do que a anteriormente cadastrada.
-	struct Tempo tempoRecorde;
-	
-// Identificação do piloto que obteve o menor tempo do circuito;
-	int identificacaoPiloto;
+	int tamanho;
+	struct MelhorVolta melhorVolta;
 };
 
 char pedeSexo();
 void pedeNome(char nomePiloto[100], char pedido[50]);
-void pedePaisOrigemPiloto(char paisOrigem[100]);
 int incluiNovoCircuito(struct Circuito circuitosRegistrados[500], int circuitosJaRegistrados);
 int incluiNovoPiloto(struct Piloto pilotosRegistrados[399], int pilotosJaRegistrados);
+int incluirMelhorVolta();
 int pedeIdPiloto();
 int pedeIdade();
+void pedePais(char paisOrigem[100], char pedido[100]);
 
 int main() {
 	setlocale(LC_ALL, "Portuguese");
@@ -78,6 +85,7 @@ int main() {
 	// inclusão de um novo piloto
 	pilotosJaRegistrados = incluiNovoPiloto(pilotosRegistrados, pilotosJaRegistrados);
 	circuitosJaRegistrados = incluiNovoCircuito(circuitosRegistrados, circuitosJaRegistrados);
+	incluirMelhorVolta();
 }
 
 int incluiNovoCircuito(struct Circuito circuitosRegistrados[500], int circuitosJaRegistrados){
@@ -85,26 +93,87 @@ int incluiNovoCircuito(struct Circuito circuitosRegistrados[500], int circuitosJ
 	
 	circuito.codigo = circuitosJaRegistrados;
 	pedeNome(circuito.nome, "circuito");
-	circuitosRegistrados[circuitosJaRegistrados] = circuito;
+	pedePais(circuito.pais, "circuito");
 	
+	printf("Digite o tamanho do circuito: ");
+	scanf("%f", &circuito.tamanho);
+	fflush(stdin);
+	
+	// falta incluir as melhores voltas do percurso, que será incluída em outra funcionalidade, por enquanto
+	// o circuito ficará sem uma melhor volta até que o usuário insira uma em um circuito especifico.
+		
+	circuitosRegistrados[circuitosJaRegistrados] = circuito;
 	return circuitosJaRegistrados + 1;
 }
 
 int incluiNovoPiloto(struct Piloto pilotosRegistrados[399], int pilotosJaRegistrados){
 	struct Piloto piloto;
 	
+	// preenche as informações do piloto que está sendo cadastrado
 	piloto.codigo = pedeIdPiloto();
 	pedeNome(piloto.nome, "piloto");
 	piloto.idade = pedeIdade();
-	pedePaisOrigemPiloto(piloto.paisOrigem);
+	pedePais(piloto.paisOrigem, "piloto");
 	piloto.sexo = pedeSexo();
 	
+	// adiciona o piloto criado nessa função dentro do vetor de pilotos.
 	pilotosRegistrados[pilotosJaRegistrados] = piloto;
 	printf("\nPiloto Registrado com sucesso!");
-	Sleep(3000);
+	
+	// o programa "espera" por 2 segundos para poder voltar ao menu.
+	Sleep(2000);
 
 	system("CLS");
 	return pilotosJaRegistrados + 1;
+}
+
+
+/*
+Melhor Volta: identifica a melhor volta de um piloto em uma data em um circuito:
+- Identificação do piloto
+- Identificação do circuito
+- Nome da equipe do piloto
+- Data da volta com dia, mês e ano.
+- Tempo da melhor volta em minutos, segundos e milissegundos;
+OBS: Deverá existir um único registro para um piloto em um circuito em uma data. Um
+piloto pode realizar várias melhores voltas em um circuito desde que sejam em dias
+diferentes.
+Universidade Católica de Brasília – UCB
+Curso de BCC - Programação Estruturada - Lista #3
+Prof. Diego Rodrigues
+Eixo de Programação BOM PROJETO
+Para o cadastro de um Piloto ou Circuito só poderão ser utilizados os países
+previamente cadastrados (seja um vetor pré-definido ou com o uso de leitura em
+arquivos).
+*/
+
+int incluirMelhorVolta(){
+	struct MelhorVolta melhorVolta;
+	
+	char dataMelhorVoltaString[10];
+	printf("Digite a data da melhor volta nesse formato: (dd mm yyyy): ");
+	scanf("%[^\n]s", &dataMelhorVoltaString);
+	fflush(stdin);
+	
+	char diaString[2];
+	diaString[0] = dataMelhorVoltaString[0];
+	diaString[1] = dataMelhorVoltaString[1];
+		
+	char mesString[2];
+	mesString[0] = dataMelhorVoltaString[3];
+	mesString[1] = dataMelhorVoltaString[4];
+
+	char anoString[4];
+	anoString[0] = dataMelhorVoltaString[6];
+	anoString[1] = dataMelhorVoltaString[7];
+	anoString[2] = dataMelhorVoltaString[8];
+	anoString[3] = dataMelhorVoltaString[9];
+	
+	melhorVolta.data.dia = atoi(diaString);
+	melhorVolta.data.mes = atoi(mesString);
+	melhorVolta.data.ano = atoi(anoString);
+
+	return 0;
 }
 
 
@@ -127,25 +196,27 @@ int pedeIdade(){
 	return pedeIdade();
 }
 
-void pedePaisOrigemPiloto(char paisOrigem[100]){
+void pedePais(char paisOrigem[100], char pedido[100]){
 	int i;
 	
-	printf("Digite o país de origem do piloto: ");
+	printf("Digite o país de origem do %s: ", pedido);
 	scanf("%[^\n]s", &paisOrigem);
 	fflush(stdin);
 	// essa variável indica se o programa encontrou o nome do país que o usuário digitou no vetor de países
 	// 0 significa que não encontrou, 1 significa que encontrou o nome
 	int achou = 0;
 
-	for(i = 0; i < 20; i++){
-		if(strcmp(paisOrigem, paises[i]) == 0)
+	//validação do pais origem:
+
+//	for(i = 0; i < 20; i++){
+//		if(strcmp(paisOrigem, paises[i]) == 0)
 			achou = 1;
-	}
+//	}
 	
 	if(achou == 0){
 		system("CLS");
 		printf("Não conseguimos entender... tente novamente\n");
-		pedePaisOrigemPiloto(paisOrigem);	
+		pedePais(paisOrigem, pedido);	
 	}
 
 }
