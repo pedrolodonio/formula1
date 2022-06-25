@@ -66,6 +66,7 @@ int incluirMelhorVolta();
 int pedeIdPiloto();
 int pedeIdade();
 void pedePais(char paisOrigem[100], char pedido[100]);
+void exibePilotos(struct Piloto pilotos[399], int quantidadePilotos);
 
 int main() {
 	setlocale(LC_ALL, "Portuguese");
@@ -74,18 +75,57 @@ int main() {
 	struct Circuito circuitosRegistrados[500];
 	int circuitosJaRegistrados = 0;
 	int pilotosJaRegistrados = 0;
-	
+	int opcaoUsuario;
 	
 	//	Para o cadastro de um Piloto ou Circuito só poderão ser utilizados os países
 	//	previamente cadastrados (seja um vetor pré-definido ou com o uso de leitura em
 	//	arquivos).
 	
+	while(true){
+		
+		printf("BEM VINDO AO SISTEMA DA FORMULA 1\n\n");
+		printf("1) Cadastrar um novo piloto\n");
+		printf("2) Exibir os pilotos já cadastrados\n");
+		printf("3) Sair do programa\n");
+		printf("Digite a sua opção: ");
+		scanf("%i", &opcaoUsuario);
+		
+		switch(opcaoUsuario){
+			case 1: 
+				pilotosJaRegistrados = incluiNovoPiloto(pilotosRegistrados, pilotosJaRegistrados);
+				break;
+			case 2:
+				exibePilotos(pilotosRegistrados, pilotosJaRegistrados);
+				break;
+			case 3: 
+				return 0;
+				break;
+		}
+	}
+}
 
+// aqui eu vou fazer um programa que exibe todos os pilotos registrados:
+void exibePilotos(struct Piloto pilotos[399], int quantidadePilotos){
 	
-	// inclusão de um novo piloto
-	pilotosJaRegistrados = incluiNovoPiloto(pilotosRegistrados, pilotosJaRegistrados);
-	circuitosJaRegistrados = incluiNovoCircuito(circuitosRegistrados, circuitosJaRegistrados);
-	incluirMelhorVolta();
+	// para cada um dos pilotos que estão dentro do vetor passado como argumento para a função
+	// ele imprime várias informações sobre o piloto em questão.
+	system("CLS");
+	printf("============= PILOTOS REGISTRADOS ============\n\n");
+
+	for(int i = 0; i < quantidadePilotos; i++){
+		// imprimindo o código do piloto, nome, idade, país de origem e sexo.
+		printf("Piloto número: %i\n\n", pilotos[i].codigo);
+		printf("Nome: %s\n", pilotos[i].nome);
+		printf("Idade: %s\n", pilotos[i].idade);
+		printf("País de origem: %s\n", pilotos[i].paisOrigem);
+		printf("Sexo: ");
+		// verifica se o sexo salvo é f, então o piloto é do sexo feminino, caso contrário, o sexo do
+		// piloto em questão é masculino.
+		if(pilotos[i].sexo == 'f') printf("feminino\n");
+			else printf("masculino\n");
+	}
+	
+	printf("\n============================================\n");
 }
 
 int incluiNovoCircuito(struct Circuito circuitosRegistrados[500], int circuitosJaRegistrados){
