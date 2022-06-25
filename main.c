@@ -63,7 +63,7 @@ void pedeNome(char nomePiloto[100], char pedido[50]);
 int incluiNovoCircuito(struct Circuito circuitosRegistrados[500], int circuitosJaRegistrados);
 int incluiNovoPiloto(struct Piloto pilotosRegistrados[399], int pilotosJaRegistrados);
 int incluirMelhorVolta();
-int pedeIdPiloto();
+int pedeIdPiloto(struct Piloto pilotosRegistrados[399], int pilotosJaRegistrados);
 int pedeIdade();
 void pedePais(char paisOrigem[100], char pedido[100]);
 void exibePilotos(struct Piloto pilotos[399], int quantidadePilotos);
@@ -150,7 +150,7 @@ int incluiNovoPiloto(struct Piloto pilotosRegistrados[399], int pilotosJaRegistr
 	struct Piloto piloto;
 	
 	// preenche as informações do piloto que está sendo cadastrado
-	piloto.codigo = pedeIdPiloto();
+	piloto.codigo = pedeIdPiloto(pilotosRegistrados, pilotosJaRegistrados);
 	pedeNome(piloto.nome, "piloto");
 	piloto.idade = pedeIdade();
 	pedePais(piloto.paisOrigem, "piloto");
@@ -166,26 +166,6 @@ int incluiNovoPiloto(struct Piloto pilotosRegistrados[399], int pilotosJaRegistr
 	system("CLS");
 	return pilotosJaRegistrados + 1;
 }
-
-
-/*
-Melhor Volta: identifica a melhor volta de um piloto em uma data em um circuito:
-- Identificação do piloto
-- Identificação do circuito
-- Nome da equipe do piloto
-- Data da volta com dia, mês e ano.
-- Tempo da melhor volta em minutos, segundos e milissegundos;
-OBS: Deverá existir um único registro para um piloto em um circuito em uma data. Um
-piloto pode realizar várias melhores voltas em um circuito desde que sejam em dias
-diferentes.
-Universidade Católica de Brasília – UCB
-Curso de BCC - Programação Estruturada - Lista #3
-Prof. Diego Rodrigues
-Eixo de Programação BOM PROJETO
-Para o cadastro de um Piloto ou Circuito só poderão ser utilizados os países
-previamente cadastrados (seja um vetor pré-definido ou com o uso de leitura em
-arquivos).
-*/
 
 int incluirMelhorVolta(){
 	struct MelhorVolta melhorVolta;
@@ -239,8 +219,11 @@ int pedeIdade(){
 void pedePais(char paisOrigem[100], char pedido[100]){
 	int i;
 	
+	char pais[100];
+	strcpy(pais, paisOrigem);
+	
 	printf("Digite o país de origem do %s: ", pedido);
-	scanf("%[^\n]s", &paisOrigem);
+	scanf("%[^\n]s", &pais);
 	fflush(stdin);
 	// essa variável indica se o programa encontrou o nome do país que o usuário digitou no vetor de países
 	// 0 significa que não encontrou, 1 significa que encontrou o nome
@@ -248,21 +231,20 @@ void pedePais(char paisOrigem[100], char pedido[100]){
 
 	//validação do pais origem:
 
-//	for(i = 0; i < 20; i++){
-//		if(strcmp(paisOrigem, paises[i]) == 0)
+	for(i = 0; i < 20; i++){
+		if(strcmp(pais, paises[i]) == 0)
 			achou = 1;
-//	}
+	}
 	
 	if(achou == 0){
 		system("CLS");
 		printf("Não conseguimos entender... tente novamente\n");
 		pedePais(paisOrigem, pedido);	
 	}
-
 }
 
 
-int pedeIdPiloto(){
+int pedeIdPiloto(struct Piloto pilotosRegistrados[399], int pilotosJaRegistrados){
 	
 	// falta verificar se o id que o usuário passou já foi incluído em algum momento, assim evitar a repetição do mesmo piloto
 	int idPiloto;
@@ -273,13 +255,21 @@ int pedeIdPiloto(){
 	fflush(stdin);
 	
 	// verifica se o id do piloto está no intervalo de 100 e 500 (não incluso) 
+	
+	for(int i = 0; i < pilotosJaRegistrados; i++){
+		if(idPiloto == pilotosRegistrados[i].codigo){
+			system("CLS");
+			printf("ERRO! ID JÁ REGISTRADO, TENTE NOVAMENTE...\n");
+			return pedeIdPiloto(pilotosRegistrados, pilotosJaRegistrados);
+		}
+	}
 	if(idPiloto > 100 && idPiloto < 500){
 		return idPiloto;
 	} else { 
 	// se o id do piloto não passou pelas verificações acima, então o programa limpa a tela, exibe uma mensagem de erro e começa o processo novamente até achar um id válido
 		system("CLS");
 		printf("Valor digitado incorreto, tente novamente...\n\n");
-		return pedeIdPiloto();
+		return pedeIdPiloto(pilotosRegistrados, pilotosJaRegistrados);
 	}
 }
 
