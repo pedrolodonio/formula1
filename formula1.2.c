@@ -68,6 +68,7 @@ int pedeIdPiloto(struct Piloto pilotosRegistrados[399], int pilotosJaRegistrados
 int pedeIdade();
 void pedePais(char paisOrigem[100], char pedido[100]);
 void exibePilotos(struct Piloto pilotos[399], int quantidadePilotos);
+void exibeCircuitos(struct Circuito circuitos[500],int qntdCircuitos);
 
 int main() {
 	setlocale(LC_ALL, "Portuguese");
@@ -89,7 +90,9 @@ int main() {
 		printf("1) Cadastrar um novo piloto\n");
 		printf("2) Cadastrar um novo circuito\n");
 		printf("3) Exibir pilotos cadastrados\n");
-		printf("4) Sair do programa\n");
+		printf("4) Exibir circuitos cadastrados\n");
+		printf("5) Exibir todos os dados cadastrados\n");
+		printf("6) Encerrar programa\n");
 		printf("Digite a sua opção: ");
 		scanf("%i", &opcaoUsuario);
 		
@@ -105,7 +108,14 @@ int main() {
 				exibePilotos(pilotosRegistrados, pilotosJaRegistrados);
 				break;
 			case 4: 
-				return 0;
+				exibeCircuitos(circuitosRegistrados,circuitosJaRegistrados);
+				break;
+			case 5:
+				exibePilotos(pilotosRegistrados, pilotosJaRegistrados);
+				exibeCircuitos(circuitosRegistrados,circuitosJaRegistrados);
+				break;
+			case 6:
+				return 0 ;
 				break;
 		}
 	}
@@ -138,7 +148,25 @@ void exibePilotos(struct Piloto pilotos[399], int quantidadePilotos){
 	
 	system("PAUSE");
 }
+void exibeCircuitos(struct Circuito circuitos[500],int qntdCircuitos){
+	//função que imprime os dados do circuito
+	int i;
+	system("CLS");
+	printf("============= Circuitos REGISTRADOS ============\n\n");
 
+	for(i = 0; i < qntdCircuitos; i++){
+		// imprimindo o código,nome,pais e o tamanho do circuito
+		printf(" circuito numero: %d\n", circuitos[i].codigo);
+		printf("Nome: %s\n", circuitos[i].nome);
+		printf("Pais: %s\n", circuitos[i].pais);
+		printf("Tamanho: %2.fKM\n", circuitos[i].tamanho);
+	}
+	
+	printf("\n============================================\n\n");
+	system("PAUSE");
+	
+	}
+	
 int incluiNovoCircuito(struct Circuito circuitosRegistrados[500], int circuitosJaRegistrados){
 	struct Circuito circuito;
 	
