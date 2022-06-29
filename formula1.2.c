@@ -68,6 +68,7 @@ int pedeIdade();
 void pedePais(char paisOrigem[100], char pedido[100]);
 void exibePilotos(struct Piloto pilotos[399], int quantidadePilotos);
 void exibeCircuitos(struct Circuito circuitos[500],int qntdCircuitos);
+void pedeNome(char nomePiloto[100], char pedido[50]);
 
 int main() {
 	setlocale(LC_ALL, "Portuguese");
@@ -141,6 +142,9 @@ int main() {
 			case 7:
 				return 0;
 				break;
+			default: 
+				printf("\nValor digitado incorreto, tente novamente...\n");
+				system("PAUSE");
 		}
 	}
 }
@@ -197,8 +201,8 @@ int incluiNovoCircuito(struct Circuito circuitosRegistrados[500], int circuitosJ
 	circuito.codigo = circuitosJaRegistrados;
 	
 	// entrada do tamanho do circuito a ser adicionado
-	printf("Nome do circuito:");
-	scanf("%s",&circuito.nome);
+	printf("Nome do circuito: ");
+	scanf("%s", circuito.nome);
 	pedePais(circuito.pais, "circuito");
 	printf("Digite o tamanho do circuito: ");
 	scanf("%d", &circuito.tamanho);
@@ -219,9 +223,8 @@ int incluiNovoPiloto(struct Piloto pilotosRegistrados[399], int pilotosJaRegistr
 	
 	// preenche as informações do piloto que está sendo cadastrado
 	piloto.codigo = pedeIdPiloto(pilotosRegistrados, pilotosJaRegistrados);
-	printf("Nome:");
-	scanf("%[^\n]s",&piloto.nome);
-	pedePais(piloto.paisOrigem, "circuito");
+	pedeNome(piloto.nome, "piloto");
+	pedePais(piloto.paisOrigem, "piloto");
 	piloto.idade = pedeIdade();
 	piloto.sexo = pedeSexo();
 	
@@ -325,12 +328,9 @@ char pedeSexo(){
 
 void pedePais(char paisOrigem[100], char pedido[100]){
 	int i;
-	
-	char pais[100];
-	strcpy(pais, paisOrigem);
-	
+
 	printf("Digite o país de origem do %s: ", pedido);
-	scanf("%[^\n]s", &pais);
+	scanf("%[^\n]s", paisOrigem);
 	fflush(stdin);
 	// essa variável indica se o programa encontrou o nome do país que o usuário digitou no vetor de países
 	// 0 significa que não encontrou, 1 significa que encontrou o nome
@@ -339,7 +339,7 @@ void pedePais(char paisOrigem[100], char pedido[100]){
 	//validação do pais origem:
 
 	for(i = 0; i < 20; i++){
-		if(strcmp(pais, paises[i]) == 0)
+		if(strcmp(paisOrigem, paises[i]) == 0)
 			achou = 1;
 	}
 	
@@ -348,4 +348,10 @@ void pedePais(char paisOrigem[100], char pedido[100]){
 		printf("Não conseguimos entender... tente novamente\n");
 		pedePais(paisOrigem, pedido);	
 	}
+}
+
+void pedeNome(char nomePiloto[100], char pedido[50]){
+	printf("Digite o nome do %s: ", pedido);
+	scanf("%[^\n]s", nomePiloto);
+	fflush(stdin);
 }
