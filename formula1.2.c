@@ -60,15 +60,14 @@ struct Circuito{
 };
 
 char pedeSexo();
-void pedeNome(char nomePiloto[100], char pedido[50]);
 int incluiNovoCircuito(struct Circuito circuitosRegistrados[500], int circuitosJaRegistrados);
 int incluiNovoPiloto(struct Piloto pilotosRegistrados[399], int pilotosJaRegistrados);
 int incluirMelhorVolta();
 int pedeIdPiloto(struct Piloto pilotosRegistrados[399], int pilotosJaRegistrados);
 int pedeIdade();
-void pedePais(char paisOrigem[100], char pedido[100]);
 void exibePilotos(struct Piloto pilotos[399], int quantidadePilotos);
 void exibeCircuitos(struct Circuito circuitos[500],int qntdCircuitos);
+void consultaPiloto();
 
 int main() {
 	setlocale(LC_ALL, "Portuguese");
@@ -77,7 +76,8 @@ int main() {
 	int circuitosJaRegistrados = 0;
 	int pilotosJaRegistrados = 0;
 	int opcaoUsuario;
-	
+	int x,qntdvezes;
+	char consulta[100];
 	//	Para o cadastro de um Piloto ou Circuito só poderão ser utilizados os países
 	//	previamente cadastrados (seja um vetor pré-definido ou com o uso de leitura em
 	//	arquivos).
@@ -92,7 +92,8 @@ int main() {
 		printf("3) Exibir pilotos cadastrados\n");
 		printf("4) Exibir circuitos cadastrados\n");
 		printf("5) Exibir todos os dados cadastrados\n");
-		printf("6) Encerrar programa\n");
+		printf("6) Pesquisar piloto por nome\n");
+		printf("7) Encerrar o programa\n");
 		printf("Digite a sua opção: ");
 		scanf("%i", &opcaoUsuario);
 		
@@ -115,7 +116,30 @@ int main() {
 				exibeCircuitos(circuitosRegistrados,circuitosJaRegistrados);
 				break;
 			case 6:
-				return 0 ;
+		
+				printf("digite o piloto que deseja buscar:");
+				scanf("%[^\n]s",&consulta);
+				fflush(stdin);
+				
+				qntdvezes = 0;
+			for(x=0;x<pilotosJaRegistrados;x++){
+				int retorno= strcmp(pilotosRegistrados[x].nome,consulta);
+				if(retorno==0){
+						qntdvezes;
+ 						printf("nome:%s\n",pilotosRegistrados[x].nome);
+ 						printf("codigo:%d\n",pilotosRegistrados[x].codigo);
+						printf("idade:%d\n",pilotosRegistrados[x].idade);
+						printf("sexo:%s\n",pilotosRegistrados[x].sexo);
+						printf("Pais de origem: %s",pilotosRegistrados[x].paisOrigem);
+				}		 
+			}	
+			
+				if(qntdvezes != 0){
+					printf("Não existe piloto cadastrado com esse nome.");
+					printf("\n\n");}			
+				break;
+			case 7:
+				return 0;
 				break;
 		}
 	}
@@ -152,14 +176,14 @@ void exibeCircuitos(struct Circuito circuitos[500],int qntdCircuitos){
 	//função que imprime os dados do circuito
 	int i;
 	system("CLS");
-	printf("============= Circuitos REGISTRADOS ============\n\n");
+	printf("============= CIRCUITOS REGISTRADOS ============\n\n");
 
 	for(i = 0; i < qntdCircuitos; i++){
 		// imprimindo o código,nome,pais e o tamanho do circuito
-		printf(" circuito numero: %d\n", circuitos[i].codigo);
+		printf("Circuito Numero: %d\n", circuitos[i].codigo);
 		printf("Nome: %s\n", circuitos[i].nome);
 		printf("Pais: %s\n", circuitos[i].pais);
-		printf("Tamanho: %2.fKM\n", circuitos[i].tamanho);
+		printf("Tamanho: %i KM\n", circuitos[i].tamanho);
 	}
 	
 	printf("\n============================================\n\n");
@@ -171,12 +195,14 @@ int incluiNovoCircuito(struct Circuito circuitosRegistrados[500], int circuitosJ
 	struct Circuito circuito;
 	
 	circuito.codigo = circuitosJaRegistrados;
-	pedeNome(circuito.nome, "circuito");
-	pedePais(circuito.pais, "circuito");
 	
 	// entrada do tamanho do circuito a ser adicionado
+	printf("Nome do circuito:");
+	scanf("%s",&circuito.nome);
+	printf("Pais:");
+	scanf("%s",&circuito.pais);
 	printf("Digite o tamanho do circuito: ");
-	scanf("%f", &circuito.tamanho);
+	scanf("%d", &circuito.tamanho);
 	fflush(stdin);
 	// falta incluir as melhores voltas do percurso, que será incluída em outra funcionalidade, por enquanto
 	// o circuito ficará sem uma melhor volta até que o usuário insira uma em um circuito especifico.
@@ -194,9 +220,11 @@ int incluiNovoPiloto(struct Piloto pilotosRegistrados[399], int pilotosJaRegistr
 	
 	// preenche as informações do piloto que está sendo cadastrado
 	piloto.codigo = pedeIdPiloto(pilotosRegistrados, pilotosJaRegistrados);
-	pedeNome(piloto.nome, "piloto");
+	printf("Nome:");
+	scanf("%[^\n]s",&piloto.nome);
+	printf("Pais de Origem:");
+	scanf("%s",&piloto.paisOrigem);
 	piloto.idade = pedeIdade();
-	pedePais(piloto.paisOrigem, "piloto");
 	piloto.sexo = pedeSexo();
 	
 	// adiciona o piloto criado nessa função dentro do vetor de pilotos.
@@ -239,13 +267,6 @@ int incluirMelhorVolta(){
 	return 0;
 }
 
-
-void pedeNome(char nomePiloto[100], char pedido[50]){
-	printf("Digite o nome do %s: ", pedido);
-	scanf("%[^\n]s", &nomePiloto);
-	fflush(stdin);
-}
-
 int pedeIdade(){
 	int idade;
 	
@@ -258,34 +279,6 @@ int pedeIdade(){
 	printf("Idade inválida! Tente novamente...\n");
 	return pedeIdade();
 }
-
-void pedePais(char paisOrigem[100], char pedido[100]){
-	int i;
-	
-	char pais[100];
-	strcpy(pais, paisOrigem);
-	
-	printf("Digite o país de origem do %s: ", pedido);
-	scanf("%[^\n]s", &pais);
-	fflush(stdin);
-	// essa variável indica se o programa encontrou o nome do país que o usuário digitou no vetor de países
-	// 0 significa que não encontrou, 1 significa que encontrou o nome
-	int achou = 0;
-
-	//validação do pais origem:
-
-	for(i = 0; i < 20; i++){
-		if(strcmp(pais, paises[i]) == 0)
-			achou = 1;
-	}
-	
-	if(achou == 0){
-		system("CLS");
-		printf("Não conseguimos entender... tente novamente\n");
-		pedePais(paisOrigem, pedido);	
-	}
-}
-
 
 int pedeIdPiloto(struct Piloto pilotosRegistrados[399], int pilotosJaRegistrados){
 	
