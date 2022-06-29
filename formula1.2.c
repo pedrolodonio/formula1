@@ -68,7 +68,7 @@ int pedeIdade();
 void pedePais(char paisOrigem[100], char pedido[100]);
 void exibePilotos(struct Piloto pilotos[399], int quantidadePilotos);
 void exibeCircuitos(struct Circuito circuitos[500],int qntdCircuitos);
-void pedeNome(char nomePiloto[100], char pedido[50]);
+void pedeNome(char nome[100], char pedido[50]);
 
 int main() {
 	setlocale(LC_ALL, "Portuguese");
@@ -97,6 +97,7 @@ int main() {
 		printf("7) Encerrar o programa\n");
 		printf("Digite a sua opção: ");
 		scanf("%i", &opcaoUsuario);
+		fflush(stdin);
 		
 		// baseado no que o usuário digitou, um dos caminhos será escolhido.
 		switch(opcaoUsuario){
@@ -123,21 +124,24 @@ int main() {
 				fflush(stdin);
 				
 				qntdvezes = 0;
-			for(x=0;x<pilotosJaRegistrados;x++){
-				int retorno= strcmp(pilotosRegistrados[x].nome,consulta);
-				if(retorno==0){
+				for(x=0; x<pilotosJaRegistrados; x++){
+					int retorno= strcmp(pilotosRegistrados[x].nome,consulta);
+					if(retorno==0){
 						qntdvezes;
- 						printf("nome:%s\n",pilotosRegistrados[x].nome);
- 						printf("codigo:%d\n",pilotosRegistrados[x].codigo);
-						printf("idade:%d\n",pilotosRegistrados[x].idade);
-						printf("sexo:%s\n",pilotosRegistrados[x].sexo);
-						printf("Pais de origem: %s",pilotosRegistrados[x].paisOrigem);
+ 						printf("nome:%s\n", pilotosRegistrados[x].nome);
+ 						printf("codigo:%d\n", pilotosRegistrados[x].codigo);
+						printf("idade:%d\n", pilotosRegistrados[x].idade);
+						printf("sexo:%c\n", pilotosRegistrados[x].sexo);
+						printf("Pais de origem: %s\n", pilotosRegistrados[x].paisOrigem);
+						printf("\n\n");
+						system("PAUSE");
 				}		 
 			}	
 			
 				if(qntdvezes != 0){
 					printf("Não existe piloto cadastrado com esse nome.");
-					printf("\n\n");}			
+					printf("\n\n");
+				}			
 				break;
 			case 7:
 				return 0;
@@ -145,6 +149,7 @@ int main() {
 			default: 
 				printf("\nValor digitado incorreto, tente novamente...\n");
 				system("PAUSE");
+				break;
 		}
 	}
 }
@@ -168,8 +173,9 @@ void exibePilotos(struct Piloto pilotos[399], int quantidadePilotos){
 		// verifica se o sexo salvo é f, então o piloto é do sexo feminino, caso contrário, o sexo do
 		// piloto em questão é masculino.
 		if(piloto.sexo == 'f') 
-			printf("feminino\n");
-		else printf("masculino\n");
+			printf("feminino");
+		else printf("masculino");
+		printf("\n\n");
 	}
 	
 	printf("\n============================================\n\n");
@@ -187,26 +193,27 @@ void exibeCircuitos(struct Circuito circuitos[500],int qntdCircuitos){
 		printf("Circuito Numero: %d\n", circuitos[i].codigo);
 		printf("Nome: %s\n", circuitos[i].nome);
 		printf("Pais: %s\n", circuitos[i].pais);
-		printf("Tamanho: %i KM\n", circuitos[i].tamanho);
+		printf("Tamanho: %i KM", circuitos[i].tamanho);
+		printf("\n\n");
 	}
 	
-	printf("\n============================================\n\n");
+	printf("\n===============================================\n\n");
 	system("PAUSE");
 	
-	}
+}
 	
 int incluiNovoCircuito(struct Circuito circuitosRegistrados[500], int circuitosJaRegistrados){
 	struct Circuito circuito;
 	
 	circuito.codigo = circuitosJaRegistrados;
-	
+//	fflush(stdin);
 	// entrada do tamanho do circuito a ser adicionado
-	printf("Nome do circuito: ");
-	scanf("%s", circuito.nome);
+	pedeNome(circuito.nome, "circuito");
 	pedePais(circuito.pais, "circuito");
 	printf("Digite o tamanho do circuito: ");
 	scanf("%d", &circuito.tamanho);
 	fflush(stdin);
+	
 	// falta incluir as melhores voltas do percurso, que será incluída em outra funcionalidade, por enquanto
 	// o circuito ficará sem uma melhor volta até que o usuário insira uma em um circuito especifico.
 	
@@ -321,14 +328,15 @@ char pedeSexo(){
 	// se for f ou m, então está válido, portanto já retorna o valor
 	if(sexo == 'f' || sexo == 'm') return sexo;
 	
-	// caso o contrário exibe a mensagem de valor inválido e repete a função
+	// caso o contrário: limpa a tela, exibe a mensagem de valor inválido e repete a função
+	system("CLS");
 	printf("Valor inválido! Tente novamente...\n");
 	return pedeSexo();	
 }
 
 void pedePais(char paisOrigem[100], char pedido[100]){
 	int i;
-
+	// entrada do país de origem
 	printf("Digite o país de origem do %s: ", pedido);
 	scanf("%[^\n]s", paisOrigem);
 	fflush(stdin);
@@ -336,22 +344,25 @@ void pedePais(char paisOrigem[100], char pedido[100]){
 	// 0 significa que não encontrou, 1 significa que encontrou o nome
 	int achou = 0;
 
-	//validação do pais origem:
-
+	//verifica se o país de origem está dentro da lista de países
 	for(i = 0; i < 20; i++){
 		if(strcmp(paisOrigem, paises[i]) == 0)
 			achou = 1;
 	}
 	
+	// se não achou o país na lista, então:
 	if(achou == 0){
+		// limpa a tela, imprime mensagem de erro e chama a função novamente.
 		system("CLS");
 		printf("Não conseguimos entender... tente novamente\n");
 		pedePais(paisOrigem, pedido);	
 	}
 }
 
-void pedeNome(char nomePiloto[100], char pedido[50]){
+// função feita para pedir algum nome, a string de pedido serve para se passar o que está sendo pedido
+void pedeNome(char nome[100], char pedido[50]){
+	// entrada do nome
 	printf("Digite o nome do %s: ", pedido);
-	scanf("%[^\n]s", nomePiloto);
+	scanf("%[^\n]s", nome);
 	fflush(stdin);
 }
