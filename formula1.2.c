@@ -221,8 +221,7 @@ int incluiNovoPiloto(struct Piloto pilotosRegistrados[399], int pilotosJaRegistr
 	piloto.codigo = pedeIdPiloto(pilotosRegistrados, pilotosJaRegistrados);
 	printf("Nome:");
 	scanf("%[^\n]s",&piloto.nome);
-	printf("Pais de Origem:");
-	scanf("%s",&piloto.paisOrigem);
+	pedePais(piloto.paisOrigem, "circuito");
 	piloto.idade = pedeIdade();
 	piloto.sexo = pedeSexo();
 	
