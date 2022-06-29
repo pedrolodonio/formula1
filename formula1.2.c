@@ -65,9 +65,9 @@ int incluiNovoPiloto(struct Piloto pilotosRegistrados[399], int pilotosJaRegistr
 int incluirMelhorVolta();
 int pedeIdPiloto(struct Piloto pilotosRegistrados[399], int pilotosJaRegistrados);
 int pedeIdade();
+void pedePais(char paisOrigem[100], char pedido[100]);
 void exibePilotos(struct Piloto pilotos[399], int quantidadePilotos);
 void exibeCircuitos(struct Circuito circuitos[500],int qntdCircuitos);
-void consultaPiloto();
 
 int main() {
 	setlocale(LC_ALL, "Portuguese");
@@ -199,8 +199,7 @@ int incluiNovoCircuito(struct Circuito circuitosRegistrados[500], int circuitosJ
 	// entrada do tamanho do circuito a ser adicionado
 	printf("Nome do circuito:");
 	scanf("%s",&circuito.nome);
-	printf("Pais:");
-	scanf("%s",&circuito.pais);
+	pedePais(circuito.pais, "circuito");
 	printf("Digite o tamanho do circuito: ");
 	scanf("%d", &circuito.tamanho);
 	fflush(stdin);
@@ -323,4 +322,31 @@ char pedeSexo(){
 	// caso o contrário exibe a mensagem de valor inválido e repete a função
 	printf("Valor inválido! Tente novamente...\n");
 	return pedeSexo();	
+}
+
+void pedePais(char paisOrigem[100], char pedido[100]){
+	int i;
+	
+	char pais[100];
+	strcpy(pais, paisOrigem);
+	
+	printf("Digite o país de origem do %s: ", pedido);
+	scanf("%[^\n]s", &pais);
+	fflush(stdin);
+	// essa variável indica se o programa encontrou o nome do país que o usuário digitou no vetor de países
+	// 0 significa que não encontrou, 1 significa que encontrou o nome
+	int achou = 0;
+
+	//validação do pais origem:
+
+	for(i = 0; i < 20; i++){
+		if(strcmp(pais, paises[i]) == 0)
+			achou = 1;
+	}
+	
+	if(achou == 0){
+		system("CLS");
+		printf("Não conseguimos entender... tente novamente\n");
+		pedePais(paisOrigem, pedido);	
+	}
 }
